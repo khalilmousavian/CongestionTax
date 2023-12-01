@@ -9,6 +9,6 @@ namespace CongestionTax.Service
 {
     public  interface ICongestionTaxService
     {
-        Task<double> GetTax(Guid cityId, Vehicle vehicle, List<DateTime> dates); 
+        Task<double> GetTax(Guid cityId, string vehicle, List<DateTime> dates); 
     }
 }

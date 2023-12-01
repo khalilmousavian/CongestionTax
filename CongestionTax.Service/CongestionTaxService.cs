@@ -20,7 +20,7 @@ namespace CongestionTax.Service
 
         }
 
-        public async Task<double> GetTax(Guid cityId, Vehicle vehicle, List<DateTime> dates)
+        public async Task<double> GetTax(Guid cityId, string vehicle, List<DateTime> dates)
         {
             DateTime intervalStart = dates[0];
             double totalFee = 0;
@@ -50,7 +50,7 @@ namespace CongestionTax.Service
             return (int)(end - start).TotalMinutes;
         }
 
-        private async Task<double> GetTollFee(Guid cityId, DateTime entryTime, Vehicle vehicle)
+        private async Task<double> GetTollFee(Guid cityId, DateTime entryTime, string vehicle)
         {
 
             if (await IsTollFreeDate(entryTime) || IsTollFreeVehicle(vehicle)) return 0;
@@ -73,13 +73,14 @@ namespace CongestionTax.Service
             return await _dbContext.Exemption.AnyAsync(d => d.StartDate >= date && d.EndDate <= date);
         }
 
-        private bool IsTollFreeVehicle(Vehicle vehicle)
+        private bool IsTollFreeVehicle(string vehicle)
         {
             if (vehicle == null) return false;
-            var vehicleType = vehicle.GetVehicleType();
-            Enum. TollFreeVehicles
-            return true;
+            var vehicleType = VehicleTypeFactory.CreateVehicleType(vehicle);
+
+            return vehicleType.IsTollFree();
         }
 
     }
 }
+

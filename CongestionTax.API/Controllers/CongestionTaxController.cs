@@ -19,10 +19,11 @@ namespace CongestionTax.API.Controllers
         }
 
         [HttpPost(Name = "Calculate")]
-        public async Task<IActionResult> Calculate(Guid cityId, Vehicle vehicle, List<DateTime> dateTimes)
+        public async Task<IActionResult> Calculate(Guid cityId, string vehicle, List<DateTime> dateTimes)
         {
             try
             { 
+
                 var result = await _congestionService.GetTax(cityId, vehicle, dateTimes);
 
                 return Ok(result);

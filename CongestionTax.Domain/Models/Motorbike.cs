@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace CongestionTax.Domain
 {
-    public interface IVehicle
+    public class Motorbike : IVehicle
     {
-        bool IsTollFree();
+        public bool IsTollFree()
+        {
+            return false;
+        }
     }
-
 }
