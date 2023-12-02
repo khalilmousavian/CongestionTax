@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CongestionDbContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<ICongestionDbContext, CongestionDbContext>();
 builder.Services.AddScoped<ICongestionTaxService, CongestionTaxService>();
 
 builder.Services.AddControllers();

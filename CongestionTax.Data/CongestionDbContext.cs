@@ -3,7 +3,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CongestionTax.Data
 {
-    public class CongestionDbContext : DbContext
+    public interface ICongestionDbContext
+    {
+        DbSet<TaxRate> TaxRates { get; set; }
+        DbSet<Exemption> Exemption { get; set; }
+
+        // Add other members as needed
+    }
+
+    public class CongestionDbContext : DbContext, ICongestionDbContext
     {
         public CongestionDbContext()
         {

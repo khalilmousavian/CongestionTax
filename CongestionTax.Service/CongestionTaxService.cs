@@ -12,15 +12,14 @@ namespace CongestionTax.Service
 {
     public class CongestionTaxService : ICongestionTaxService
     {
-
-        private readonly CongestionDbContext _dbContext;
-        public CongestionTaxService(CongestionDbContext dbContext)
+        private readonly ICongestionDbContext _dbContext;
+        public CongestionTaxService(ICongestionDbContext dbContext)
         {
             _dbContext = dbContext;
 
         }
 
-        public async Task<double> GetTax(Guid cityId, string vehicle, List<DateTime> dates)
+        public  double GetTax(Guid cityId, string vehicle, List<DateTime> dates)
         {
             DateTime intervalStart = dates[0];
             double totalFee = 0;
@@ -28,7 +27,7 @@ namespace CongestionTax.Service
 
             foreach (DateTime date in dates)
             {
-                double nextFee = await GetTollFee(cityId, date, vehicle);
+                double nextFee =   GetTollFee(cityId, date, vehicle);
                 if (GetMinutesDifference(intervalStart, date) <= 60)
                 {
                     maxFeeInInterval = Math.Max(maxFeeInInterval, nextFee);
@@ -50,27 +49,27 @@ namespace CongestionTax.Service
             return (int)(end - start).TotalMinutes;
         }
 
-        private async Task<double> GetTollFee(Guid cityId, DateTime entryTime, string vehicle)
+        private  double  GetTollFee(Guid cityId, DateTime entryTime, string vehicle)
         {
 
-            if (await IsTollFreeDate(entryTime) || IsTollFreeVehicle(vehicle)) return 0;
+            if ( IsTollFreeDate(entryTime) || IsTollFreeVehicle(vehicle)) return 0;
 
             //_dbContext.Database.EnsureCreated();
 
             var hour = entryTime.TimeOfDay;
-            var tariff = await _dbContext.TaxRates
-                .FirstOrDefaultAsync(t => t.CityId == cityId &&
+            var tariff =   _dbContext.TaxRates
+                .FirstOrDefault(t => t.CityId == cityId &&
 
                 hour >= t.StartTime && hour <= t.EndTime);
 
             return tariff?.Amount ?? 0;
         }
 
-        private async Task<bool> IsTollFreeDate(DateTime date)
+        private  bool  IsTollFreeDate(DateTime date)
         {
             if (date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday) return true;
 
-            return await _dbContext.Exemption.AnyAsync(d => d.StartDate >= date && d.EndDate <= date);
+            return   _dbContext.Exemption.Any(d => d.StartDate <= date && d.EndDate >= date);
         }
 
         private bool IsTollFreeVehicle(string vehicle)

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace CongestionTax.Service
 {
-    public  interface ICongestionTaxService
+    public interface ICongestionTaxService
     {
-        Task<double> GetTax(Guid cityId, string vehicle, List<DateTime> dates); 
+        double GetTax(Guid cityId, string vehicle, List<DateTime> dates);
     }
 }
